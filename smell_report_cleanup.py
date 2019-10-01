@@ -1,6 +1,6 @@
 import pandas as pd
 
-def cleanup(df: pd.read_csv):
+def cleanup(df: pd.read_csv) -> pd.DataFrame:
     df["date"] = pd.to_datetime(df['epoch time'],unit='s')
     df['year'] = pd.DatetimeIndex(df['date']).year
     df['month'] = pd.DatetimeIndex(df['date']).month
@@ -28,7 +28,7 @@ def cleanup(df: pd.read_csv):
                           'skewed longitude':'long'}, 
                  inplace=True)
 
-    print(df.head())
+    return df
         
     # print(df.dtypes)
     # for col in df.columns: 

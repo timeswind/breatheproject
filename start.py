@@ -1,10 +1,13 @@
 import numpy as np
 import pandas as pd
 
+from ProjectBreathe import ProjectBreathe
 import smell_report_cleanup
 
 smellReportLink = 'data/smell_reports.csv'
 
-rawSmellReport = pd.read_csv(smellReportLink)
+pb = ProjectBreathe(smellReportLink)
 
-smellReport = smell_report_cleanup.cleanup(rawSmellReport)
+print(pb.smellReport.zipCodes)
+# print(analyse.getAllZipCodes(smellReport))
+# analyse.groupByZipCode(smellReport)
