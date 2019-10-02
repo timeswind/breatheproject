@@ -53,5 +53,5 @@ def clear():
 if __name__ == "__main__":
     smellReportLink = 'data/smell_reports.csv'
     pb = ProjectBreathe(smellReportLink)
-
-    choose_program()
+    print(pb.smellReport.plotReportsOverMonths())
+    #choose_program()
