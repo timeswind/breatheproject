@@ -10,7 +10,6 @@ Note that this is a big dataset.  And it includes AQ data for many pollutants.  
 
 Note that this page has other useful information, such as maps showing the monitor locations.  It is worth exploring this page.
 
-
 Another useful site is the EPA’s air quality data site:
 
 [EPA](https://www.epa.gov/outdoor-air-quality-data)

@@ -1,3 +1,5 @@
+#This file contains main class for the project to analysis data, it initialize multiple data frames for later analysis
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -5,6 +7,7 @@ import numpy as np
 import smell_report_cleanup
 import analyse
 
+# SmellReport class initialize the datafrom from data of SmellPitts
 class SmellReport:
     df = pd.DataFrame()
     zipcodes = []
@@ -41,6 +44,7 @@ class SmellReport:
         plt.xticks(index, label, fontsize=5, rotation=30)
         plt.show()
         
+#ProjectBreath class contains the report link and smellReport object.
 class ProjectBreathe:
 
     smellReportLink = ''
