@@ -1,7 +1,9 @@
 # breatheproject
+
 EDSGN 460 Team Breathe Project
 
-# Document
+## Document
+
 Document about this project
 How to install required software
 Usage of the program
