@@ -37,7 +37,6 @@ class SmellReport:
         self.epa_pm_25_object.append_data_from_csv(
             data_csv_path=data_2018_filepath, year=2018)
         self.pre_analyse()
-        self.analyse()
 
     def pre_analyse(self):
         self.df = self.df.set_index(['date'])
@@ -45,25 +44,32 @@ class SmellReport:
         for county in daily_pm25_mean_cols_by_county:
             self.df[county + '_daily_pm25_mean'] = daily_pm25_mean_cols_by_county[county]
             self.df.astype({county + '_daily_pm25_mean': 'float64'}).dtypes
-            
+
         self.df['pa_daily_pm25_mean'] = self.epa_pm_25_object.pa_daiyly_pm25_mean_cols
         self.df.astype({'pa_daily_pm25_mean': 'float64'}).dtypes
         self.df.reset_index()
-    
+
     def analyse(self):
+        self.plotReportsOverMonths()
+        self.analyse_corr_smell_pm25()
+
+    def analyse_corr_smell_pm25(self):
         corr_smell_pm25_counties = {}
         for county in self.epa_pm_25_object.counties:
-            corr = self.getCorrelationBetween('smell value', county + '_daily_pm25_mean')
+            corr = self.getCorrelationBetween(
+                'smell value', county + '_daily_pm25_mean')
             corr_smell_pm25_counties[county] = corr
-            print("The correlation bewteen smell value user reported and average pm2.5 in %s at that day is %f" % (county, corr))
+            print("The correlation bewteen smell value user reported and average pm2.5 in %s at that day is %f" % (
+                county, corr))
 
-        corr_smell_pm25 = self.getCorrelationBetween('smell value', 'pa_daily_pm25_mean')
+        corr_smell_pm25 = self.getCorrelationBetween(
+            'smell value', 'pa_daily_pm25_mean')
 
         print("The correlation bewteen smell value user reported and average pm2.5 in Pennsylvania at that day is %f" % corr_smell_pm25)
         # print(self.df.head())
         #sns.regplot(x="pa_daily_pm25_mean", y="smell value", data=self.df)
-        #plt.ylim(0,)
-        #plt.show()
+        # plt.ylim(0,)
+        # plt.show()
 
     def getCorrelationBetween(self, column1, column2):
         return self.df[column1].corr(self.df[column2])
@@ -110,3 +116,6 @@ class ProjectBreathe:
 
     def cleanUp(self, df) -> pd.DataFrame:
         return smell_report_cleanup.cleanup(df)
+
+    def analyse(self):
+        self.smellReport.analyse()
