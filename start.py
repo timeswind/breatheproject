@@ -67,7 +67,9 @@ def test():
 def start():
     smellReportLink = 'data/smell_reports.csv'
     pb = ProjectBreathe(smellReportLink)
-    choose_program()
+    pb.analyse()
+    print('** Check results folder to view graphs of: correlation bewteen reported smell value and PM2.5 data records in different regions in PA')
+    print('The user reports over month')
 
 
 if __name__ == "__main__":
