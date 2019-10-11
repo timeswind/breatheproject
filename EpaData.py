@@ -29,6 +29,7 @@ class EPAdata(object):
 
 class EPAPM25(EPAdata):
         # initlaize data by csv file
+    counties = list()
 
     def __init__(self, data_csv_path: str):
         self.__init__(str, 0)
@@ -46,8 +47,18 @@ class EPAPM25(EPAdata):
         # self.dataframe = self.dataframe.rename(columns={"Date": "date"})
 
     def analyse(self):
-        self.get_mean_cols_group_by_date()
+        self.get_mean_cols_group_by('date')
         return None
     # calculate average pm2.5 readings for each date
-    def get_mean_cols_group_by_date(self):
-        self.mean_cols = self.dataframe.groupby(['date'])['Daily Mean PM2.5 Concentration'].mean()
+
+    def get_mean_cols_group_by(self, column: str):
+        counties = self.dataframe['COUNTY'].unique()
+        self.daily_pm25_mean_cols_by_county = {}
+        for county in counties:
+            self.counties.append(county)
+            filterByCounty = self.dataframe[self.dataframe['COUNTY']==county]
+            self.daily_pm25_mean_cols_by_county[county] = filterByCounty.groupby(
+            [column])['Daily Mean PM2.5 Concentration'].mean()
+            
+        self.pa_daiyly_pm25_mean_cols = self.dataframe.groupby(
+            [column])['Daily Mean PM2.5 Concentration'].mean()
