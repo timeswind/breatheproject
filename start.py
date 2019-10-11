@@ -64,7 +64,6 @@ def test():
 def start():
     smellReportLink = 'data/smell_reports.csv'
     pb = ProjectBreathe(smellReportLink)
-    print(pb.smellReport.plotReportsOverMonths())
     choose_program()
 
 

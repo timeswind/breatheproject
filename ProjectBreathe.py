@@ -47,7 +47,9 @@ class SmellReport:
         self.df.reset_index()
     
     def analyse(self):
-        print(self.getCorrelationBetween('smell value', 'pm2.5_mean'))
+
+        corr_smell_pm25 = self.getCorrelationBetween('smell value', 'pm2.5_mean')
+        print("The correlation bewteen smell value user reported and average pm2.5 in Pennsylvania at that day is %f" % corr_smell_pm25)
 
     def getCorrelationBetween(self, column1, column2):
         return self.df[column1].corr(self.df[column2])
