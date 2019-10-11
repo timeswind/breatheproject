@@ -9,7 +9,7 @@ import analyse
 
 from EpaData import EPAPM25
 
-    
+
 # SmellReport class initialize the datafrom from data of SmellPitts
 
 
@@ -31,9 +31,26 @@ class SmellReport:
         data_2017_filepath = 'data/EPA_PITTSBURG_PM25_2017.csv'
         data_2018_filepath = 'data/EPA_PITTSBURG_PM25_2018.csv'
 
-        self.epa_pm_25_object = EPAPM25(data_csv_path=data_2016_filepath, year=2016)
-        self.epa_pm_25_object.append_data_from_csv(data_csv_path=data_2017_filepath, year=2017)
-        self.epa_pm_25_object.append_data_from_csv(data_csv_path=data_2018_filepath, year=2018)
+        self.epa_pm_25_object = EPAPM25(
+            data_csv_path=data_2016_filepath, year=2016)
+        self.epa_pm_25_object.append_data_from_csv(
+            data_csv_path=data_2017_filepath, year=2017)
+        self.epa_pm_25_object.append_data_from_csv(
+            data_csv_path=data_2018_filepath, year=2018)
+        self.pre_analyse()
+        self.analyse()
+
+    def pre_analyse(self):
+        self.df = self.df.set_index(['date'])
+        self.df['pm2.5_mean'] = self.epa_pm_25_object.mean_cols
+        self.df.astype({'pm2.5_mean': 'float64'}).dtypes
+        self.df.reset_index()
+    
+    def analyse(self):
+        print(self.getCorrelationBetween('smell value', 'pm2.5_mean'))
+
+    def getCorrelationBetween(self, column1, column2):
+        return self.df[column1].corr(self.df[column2])
 
     def getZipCodes(self) -> list:
         return analyse.getAllZipCodes(self.df)

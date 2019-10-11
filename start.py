@@ -59,7 +59,7 @@ def clear():
 def test():
     smellReportLink = 'data/smell_reports.csv'
     pb = ProjectBreathe(smellReportLink)
-    print(pb.smellReport.epa_pm_25_object.dataframe.head())
+    # print(pb.smellReport.epa_pm_25_object.dataframe.head())
 
 def start():
     smellReportLink = 'data/smell_reports.csv'
