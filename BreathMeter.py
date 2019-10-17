@@ -2,7 +2,7 @@ import pandas as pd
 
 
 class BreathMeter(object):
-    default_csv_path = 'data/annual_aqi_by_cbsa_2018.csv'
+    default_csv_path = 'data/annual_aqi_by_cbsa_2016.csv'
 
     def __init__(self):
         self.df = pd.read_csv(self.default_csv_path)
@@ -16,7 +16,7 @@ class BreathMeter(object):
 
     def export(self):
         export_df = self.df[['CBSA', 'pct_rank']]
-        export_df.to_csv('results/Breath_Meter_2018.csv', index = None, header=True)
+        export_df.to_csv('results/Breath_Meter_2016.csv', index = None, header=True)
 
 
 BM = BreathMeter()
