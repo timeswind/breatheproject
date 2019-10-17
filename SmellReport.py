@@ -4,7 +4,7 @@ from EpaData import EPAPM25
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-
+import os.path
 # SmellReport class initialize the datafrom from data of SmellPitts
 
 
@@ -22,9 +22,9 @@ class SmellReport(object):
         self.initialize_epa_pm25_data()
 
     def initialize_epa_pm25_data(self):
-        data_2016_filepath = 'data/EPA_PITTSBURG_PM25_2016.csv'
-        data_2017_filepath = 'data/EPA_PITTSBURG_PM25_2017.csv'
-        data_2018_filepath = 'data/EPA_PITTSBURG_PM25_2018.csv'
+        data_2016_filepath = r'data/EPA_PITTSBURG_PM25_2016.csv'
+        data_2017_filepath = r'data/EPA_PITTSBURG_PM25_2017.csv'
+        data_2018_filepath = r'data/EPA_PITTSBURG_PM25_2018.csv'
 
         self.epa_pm_25_object = EPAPM25(
             data_csv_path=data_2016_filepath, year=2016)
@@ -67,12 +67,12 @@ class SmellReport(object):
             sns.regplot(x=county+"_daily_pm25_mean",
                         y="smell value", data=self.df)
             plt.ylim(0,)
-            plt.savefig('results/'+county+'_daily_pm25_mean.png')
+            plt.savefig(r'results/'+county+'_daily_pm25_mean.png')
             plt.close()
 
         sns.regplot(x="pa_daily_pm25_mean", y="smell value", data=self.df)
         plt.ylim(0,)
-        plt.savefig('results/pa_daily_pm25_mean.png')
+        plt.savefig(r'results/pa_daily_pm25_mean.png')
         plt.close()
 
     def getCorrelationBetween(self, column1, column2):
@@ -96,6 +96,13 @@ class SmellReport(object):
                 label.append(str(key))
                 no_users.append(yearMonthGroups.size()[key])
 
+        
+        data_folder = os.path.join("results")
+
+
+
+        file_to_open = os.path.join(data_folder, "reports_over_month.png")
+
         index = np.arange(len(label))
         description = 'This graph shows number of reports on the SmellPitts, which is a indicator to track user activities'
         plt.rc('text', usetex=False)
@@ -105,5 +112,6 @@ class SmellReport(object):
         plt.xticks(index, label, fontsize=5, rotation=30)
         plt.figtext(0.99, 0.95, description,
                     horizontalalignment='right', fontsize=8)
-        plt.savefig('results/reports_over_month.png')
+                    
+        plt.savefig(os.path.join(os.getcwd(),file_to_open))
         plt.close()
