@@ -6,22 +6,30 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 from SmellReport import SmellReport
+from ConceptC import ConceptC
 
 # ProjectBreath class contains the report link and smellReport object.
 class ProjectBreathe(object):
 
-    smellReportLink = ''
+    smellReportLink = 'data/smell_reports.csv'
     smellReport: SmellReport = None
+    conceptC:ConceptC
+
 
     def __init__(self, smellReportLink):
-
         self.smellReportLink = smellReportLink
+        smellReportDataFrame = self.getSmellReportDataFrame()
+        self.smellReport = SmellReport(smellReportDataFrame)
+        self.conceptC = ConceptC(self.smellReport)
+
+    def getSmellReportDataFrame(self) -> pd.DataFrame:
         rawSmellReport = pd.read_csv(self.smellReportLink)
         smellReportDataFrame = smell_report_cleanup.cleanup(rawSmellReport)
-        self.smellReport = SmellReport(smellReportDataFrame)
+        return smellReportDataFrame
 
     def cleanUp(self, df) -> pd.DataFrame:
         return smell_report_cleanup.cleanup(df)
 
     def analyse(self):
         self.smellReport.analyse()
+        self.conceptC.run()

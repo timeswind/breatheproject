@@ -6,11 +6,8 @@ class EPAdata(object):
     dataframe: pd.DataFrame
     # initlaize data by csv file
 
-    def __init__(self, data_csv_path: str):
-        self.__init__(data_csv_path=str, year=0)
-
     # initialize data by csv file and corronsponding year
-    def __init__(self, data_csv_path: str, year: int):
+    def __init__(self, data_csv_path: str, year: int = 0):
         self.year = year
         self.dataframe = pd.read_csv(data_csv_path)
 
@@ -28,17 +25,19 @@ class EPAdata(object):
 
 
 class EPAPM25(EPAdata):
-        # initlaize data by csv file
+    # initlaize data by csv file
     counties = list()
 
-    def __init__(self, data_csv_path: str):
-        self.__init__(str, 0)
-
     # initialize data by csv file and corronsponding year
-    def __init__(self, data_csv_path: str, year: int):
+    def __init__(self, data_csv_path: str, year: int = 0):
         super().__init__(data_csv_path, year)
         self.cleanup()
-        self.analyse()
+
+    def append_data_from_csv(self, data_csv_path: str, year: int):
+        new_EPAPM25 = EPAPM25(data_csv_path, year)
+        new_frames = new_EPAPM25.dataframe
+        frames = [self.dataframe, new_frames]
+        self.dataframe = pd.concat(frames, sort=False)
 
     def cleanup(self):
         dates = pd.to_datetime(self.dataframe['Date'])

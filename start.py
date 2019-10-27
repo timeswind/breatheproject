@@ -7,7 +7,6 @@ import pandas as pd
 # command line parser to read flag values
 import argparse
 parser = argparse.ArgumentParser()
-
 pb = None
 
 
@@ -25,6 +24,7 @@ def start():
     pb.analyse()
     print('** Check results folder to view graphs of: correlation bewteen reported smell value and PM2.5 data records in different regions in PA')
     print('The user reports over month')
+
 
 
 if __name__ == "__main__":
