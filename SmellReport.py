@@ -35,14 +35,26 @@ class SmellReport(object):
         self.pre_analyse()
 
     def pre_analyse(self):
+        pm_25_level_labels = [1,2,3,4,5]
         self.df = self.df.set_index(['date'])
         daily_pm25_mean_cols_by_county = self.epa_pm_25_object.daily_pm25_mean_cols_by_county
-        for county in daily_pm25_mean_cols_by_county:
-            self.df[county + '_daily_pm25_mean'] = daily_pm25_mean_cols_by_county[county]
-            self.df.astype({county + '_daily_pm25_mean': 'float64'}).dtypes
+        # for county in daily_pm25_mean_cols_by_county:
+            # self.df[county + '_daily_pm25_mean'] = daily_pm25_mean_cols_by_county[county]
+            # self.df.astype({county + '_daily_pm25_mean': 'float64'}).dtypes
+            # self.df[county + '_daily_pm25_mean_binned'] = pd.cut(self.df[county + '_daily_pm25_mean'], 5, labels=pm_25_level_labels)
+
+
+        self.df['Allegheny_daily_pm25_mean'] = daily_pm25_mean_cols_by_county['Allegheny']
+        self.df.astype({'Allegheny_daily_pm25_mean': 'float64'}).dtypes
+        self.df['Allegheny_daily_pm25_mean_binned'] = pd.cut(self.df['Allegheny_daily_pm25_mean'], 5, labels=pm_25_level_labels)
+        self.df.astype({'Allegheny_daily_pm25_mean': 'float64'}).dtypes
+        self.df['Allegheny_daily_pm25_mean_binned'] = self.df['Allegheny_daily_pm25_mean_binned'].astype("int8")
 
         self.df['pa_daily_pm25_mean'] = self.epa_pm_25_object.pa_daiyly_pm25_mean_cols
+        self.df['pa_daily_pm25_mean_binned'] = pd.cut(self.df['pa_daily_pm25_mean'], 5, labels=pm_25_level_labels)
         self.df.astype({'pa_daily_pm25_mean': 'float64'}).dtypes
+        self.df['pa_daily_pm25_mean_binned'] = self.df['pa_daily_pm25_mean_binned'].astype("int8")
+        
         self.df.reset_index()
 
     def analyse(self):
@@ -50,33 +62,44 @@ class SmellReport(object):
         self.analyse_corr_smell_pm25()
 
     def analyse_corr_smell_pm25(self):
+        corr_df = self.df[self.df.pa_daily_pm25_mean_binned != 0]
         corr_smell_pm25_counties = {}
-        for county in self.epa_pm_25_object.counties:
-            corr = self.getCorrelationBetween(
-                'smell value', county + '_daily_pm25_mean')
-            corr_smell_pm25_counties[county] = corr
-            print("The correlation bewteen smell value user reported and average pm2.5 in %s at that day is %f" % (
-                county, corr))
+        # for county in self.epa_pm_25_object.counties:
+        #     corr = self.getCorrelationBetween(
+        #         'smell value', county + '_daily_pm25_mean')
+        #     corr_smell_pm25_counties[county] = corr
+        #     print("The correlation bewteen smell value user reported and average pm2.5 in %s at that day is %f" % (
+        #         county, corr))
 
-        corr_smell_pm25 = self.getCorrelationBetween(
+        Allegheny_corr_smell_pm25 = self.getCorrelationBetween(corr_df,
+            'smell value', 'Allegheny' + '_daily_pm25_mean')
+        # corr_smell_pm25_counties['Allegheny'] = corr
+        print("The correlation bewteen smell value user reported and average pm2.5 in %s at that day is %f" % (
+            'Allegheny', Allegheny_corr_smell_pm25))
+
+        PA_corr_smell_pm25 = self.getCorrelationBetween(corr_df,
             'smell value', 'pa_daily_pm25_mean')
 
-        print("The correlation bewteen smell value user reported and average pm2.5 in Pennsylvania at that day is %f" % corr_smell_pm25)
+        print("The correlation bewteen smell value user reported and average pm2.5 in Pennsylvania at that day is %f" % PA_corr_smell_pm25)
         print("** We could see there is no correlation between user reported smell value and the actualy pm2.5 level")
-        for county in self.epa_pm_25_object.counties:
-            sns.regplot(x=county+"_daily_pm25_mean",
-                        y="smell value", data=self.df)
-            plt.ylim(0,)
-            plt.savefig(r'results/'+county+'_daily_pm25_mean.png')
-            plt.close()
-
-        sns.regplot(x="pa_daily_pm25_mean", y="smell value", data=self.df)
+        # for county in self.epa_pm_25_object.counties:
+        #     sns.regplot(x=county+"_daily_pm25_mean",
+        #                 y="smell value", data=self.df)
+        #     plt.ylim(0,)
+        #     plt.savefig(r'results/'+county+'_daily_pm25_mean.png')
+        #     plt.close()
+        sns.regplot(x="Allegheny_daily_pm25_mean_binned", y="smell value", data=corr_df)
         plt.ylim(0,)
-        plt.savefig(r'results/pa_daily_pm25_mean.png')
+        plt.savefig(r'results/Allegheny_daily_pm25_mean_binned.png')
         plt.close()
 
-    def getCorrelationBetween(self, column1, column2):
-        return self.df[column1].corr(self.df[column2])
+        sns.regplot(x="pa_daily_pm25_mean_binned", y="smell value", data=corr_df)
+        plt.ylim(0,)
+        plt.savefig(r'results/pa_daily_pm25_mean_binned.png')
+        plt.close()
+
+    def getCorrelationBetween(self, df, column1, column2):
+        return df[column1].corr(df[column2])
 
     def getZipCodes(self) -> list:
         return analyse.getAllZipCodes(self.df)
@@ -115,3 +138,8 @@ class SmellReport(object):
                     
         plt.savefig(os.path.join(os.getcwd(),file_to_open))
         plt.close()
+
+
+def category_to_int(category):
+    print(category)
+    return int(category)
