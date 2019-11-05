@@ -8,12 +8,16 @@ import matplotlib.pyplot as plt
 from SmellReport import SmellReport
 from ConceptC import ConceptC
 from EJAAnalysis import EJAAnalysis
-# ProjectBreath class contains the report link and smellReport object.
+
+# ProjectBreath class contains the report link and smellReport object
+
+
 class ProjectBreathe(object):
-    #default smell report csv file link
+
+    # default smell report csv file link
     smellReportLink = 'data/smell_reports.csv'
     smellReport: SmellReport = None
-    conceptC:ConceptC
+    conceptC: ConceptC
     EJAAnalysis: EJAAnalysis
 
     def __init__(self, smellReportLink):

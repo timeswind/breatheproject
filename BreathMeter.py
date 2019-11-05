@@ -19,5 +19,6 @@ class BreathMeter(object):
         export_df.to_csv('results/Breath_Meter_2016.csv', index = None, header=True)
 
 
+#Run as a single file, generate the Breath Meter results in the resutls folder
 BM = BreathMeter()
 BM.export()
