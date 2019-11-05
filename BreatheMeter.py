@@ -7,6 +7,9 @@ class BreatheMeter(object):
     def __init__(self):
         self.df = pd.read_csv(self.default_csv_path)
         self.calculateRank()
+
+    def run(self):
+        self.export()
     
     def calculateRank(self):
         self.df['pct_rank'] = self.df['Days PM2.5'].rank(pct=True)
@@ -21,4 +24,4 @@ class BreatheMeter(object):
 
 #Run as a single file, generate the Breath Meter results in the resutls folder
 BM = BreatheMeter()
-BM.export()
+BM.run()
