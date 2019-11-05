@@ -6,7 +6,7 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 from SmellReport import SmellReport
-from ConceptC import ConceptC
+from SmellPGHStatistics import SmellPGHStatistics
 from EJAAnalysis import EJAAnalysis
 from BreatheMeter import BreatheMeter
 # ProjectBreath class contains the report link and smellReport object
@@ -17,7 +17,7 @@ class ProjectBreathe(object):
     # default smell report csv file link
     smellReportLink = 'data/smell_reports.csv'
     smellReport: SmellReport = None
-    conceptC: ConceptC
+    smellPGHStatistics: SmellPGHStatistics
     EJAAnalysis: EJAAnalysis
     BreatheMeter: BreatheMeter
 
@@ -25,7 +25,7 @@ class ProjectBreathe(object):
         self.smellReportLink = smellReportLink
         smellReportDataFrame = self.getSmellReportDataFrame()
         self.smellReport = SmellReport(smellReportDataFrame)
-        self.conceptC = ConceptC(self.smellReport)
+        self.smellPGHStatistics = SmellPGHStatistics(self.smellReport)
         self.EJAAnalysis = EJAAnalysis(self.smellReport)
         self.BreatheMeter = BreatheMeter()
 
@@ -39,6 +39,6 @@ class ProjectBreathe(object):
 
     def analyse(self):
         self.smellReport.analyse()
-        self.conceptC.run()
+        self.smellPGHStatistics.run()
         self.EJAAnalysis.run()
         self.BreatheMeter.run()
