@@ -36,6 +36,6 @@ class BreatheMeter(object):
                          index=None, header=True)
 
 
-# Run as a single file, generate the Breath Meter results in the resutls folder
-BM = BreatheMeter()
-BM.run()
+# Run the test as a single file, generate the Breath Meter results in the resutls folder
+# BM = BreatheMeter()
+# BM.run()

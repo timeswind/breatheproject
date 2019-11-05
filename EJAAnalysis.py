@@ -102,6 +102,6 @@ class EJAAnalysis(object):
         return withOffset
 
 
-#Run as a single file by 'python3 EJAAnalysis.py', get the results in the results folder
-test = EJAAnalysis()
-test.run()
+# Run the test as a single file by 'python3 EJAAnalysis.py', get the results in the results folder
+# test = EJAAnalysis()
+# test.run()

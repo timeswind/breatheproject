@@ -39,7 +39,7 @@ class ProjectBreathe(object):
     # Function that return the smell report datafrome
     def getSmellReportDataFrame(self) -> pd.DataFrame:
         rawSmellReport = pd.read_csv(self.smellReportLink)
-        #Clean up the smell report data entries
+        # Clean up the smell report data entries
         smellReportDataFrame = self.cleanUp(rawSmellReport)
         return smellReportDataFrame
 
@@ -48,7 +48,7 @@ class ProjectBreathe(object):
 
     # Run all analysis
     def analyse(self):
-        self.smellReport.analyse()
+        self.smellReport.run()
         self.smellPGHStatistics.run()
         self.EJAAnalysis.run()
         self.BreatheMeter.run()

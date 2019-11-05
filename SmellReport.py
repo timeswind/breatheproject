@@ -72,16 +72,18 @@ class SmellReport(object):
 
         self.df.reset_index()
 
-    def analyse(self):
+    def run(self):
         self.plotReportsOverMonths()
         self.analyse_corr_smell_pm25()
 
     def analyse_corr_smell_pm25(self):
-        corr_df = self.df[self.df.pa_daily_pm25_mean_binned != 0]
-        
+
+        corr_df = self.df.copy()
+        corr_df = corr_df[self.df.pa_daily_pm25_mean_binned != 0]
         # normalize smell value and pm25 readings
         SmellValueNormalized = corr_df["smell value"] / \
             corr_df["smell value"].max()
+
         corr_df["smell value normalized"] = SmellValueNormalized
         Allegheny_Daily_PM25_mean_Normalized = corr_df["Allegheny_daily_pm25_mean"] / \
             corr_df["Allegheny_daily_pm25_mean"].max()
@@ -171,3 +173,7 @@ class SmellReport(object):
 
         plt.savefig(os.path.join(os.getcwd(), file_to_open))
         plt.close()
+
+
+# SP = SmellReport()
+# SP.run()
