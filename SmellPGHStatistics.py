@@ -30,12 +30,17 @@ class SmellPGHStatistics(object):
         self.df = self.df.groupby('date').mean()
         self.df = self.df[self.df['pa_daily_pm25_mean_binned'] != 0]
         # Group the PM2.5 Readings into 6 different category with Boundary value we get from EPA site
-        cut_bounds = [0, 50, 100, 150, 200, 300, 500]
+        cut_bounds = [0.0, 15.0, 40.0, 65.0, 150.0, 250.0, 500.0]
         bounds_labels = ['Good', 'Moderate', 'Unhealthy for Sensitive Groups',
                          'Unhealthy', 'Very Unhealthy', 'Hazardous']
         bucketted_allegheny_daily_pm25_mean = pd.cut(
-            self.df["Allegheny_daily_pm25_mean"], bins=cut_bounds, labels=bounds_labels)
+            self.df["Allegheny_daily_pm25_mean"], bins=cut_bounds, labels=bounds_labels, retbins=False).astype(str)
+
+        print(bucketted_allegheny_daily_pm25_mean)
         self.df["bucketted_allegheny_daily_pm25_mean"] = bucketted_allegheny_daily_pm25_mean
+
+        print(self.df["bucketted_allegheny_daily_pm25_mean"])
+
         self.df = self.df.reset_index()
         self.df["smell value"] = self.df["smell value"] / \
             self.df["smell value"].max()
@@ -48,16 +53,27 @@ class SmellPGHStatistics(object):
 
     def plot(self):
         my_dpi = 100
-        plt.figure(figsize=(8000/my_dpi, 800/my_dpi), dpi=my_dpi)
-        plt.plot('date', 'smell value', data=self.df, marker='o', markerfacecolor='blue',
-                 markersize=1, color='yellow', linewidth=1, label="Smell Value Normalized")
-        plt.plot('date', 'Allegheny_daily_pm25_mean', data=self.df, marker='o', markerfacecolor='yellow',
-                 markersize=1, color='skyblue', linewidth=1, label="Allegheny_daily_pm25_mean_normalized")
-        plt.legend()
+        fig = plt.figure(figsize=(8000/my_dpi, 800/my_dpi), dpi=my_dpi)
+        ax = fig.add_subplot(111)
+        bounds_labels = ['Good', 'Moderate', 'Unhealthy for Sensitive Groups',
+                         'Unhealthy', 'Very Unhealthy', 'Hazardous']
+
+        lns1= ax.plot('date', 'smell value', data=self.df, marker='o', markerfacecolor='blue',
+                markersize=1, color='blue', linewidth=1, label="Smell Value Normalized")
+        lns2 =ax.plot('date', 'Allegheny_daily_pm25_mean', data=self.df, marker='o', markerfacecolor='red',
+                markersize=1, color='red', linewidth=1, label="Allegheny_daily_pm25_mean_normalized")
+
+        ax2 = ax.twinx()
+        lns3 = ax2.plot('date', 'bucketted_allegheny_daily_pm25_mean', data=self.df, marker='o', markerfacecolor='green',
+                markersize=1, color='green', linewidth=1, label="Smell Value Normalized")
+        lns = lns1+lns2+lns3
+        labs = [l.get_label() for l in lns]
+        ax.legend(lns, labs, loc=0)
         plt.savefig(
             r'results/compare_bewteen_smell_value_and_pm25_history_line.png')
         plt.close()
 
+
 # test only
-SPS = SmellPGHStatistics()
-SPS.run()
+# SPS = SmellPGHStatistics()
+# SPS.run()
