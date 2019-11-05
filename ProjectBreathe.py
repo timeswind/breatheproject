@@ -21,22 +21,32 @@ class ProjectBreathe(object):
     EJAAnalysis: EJAAnalysis
     BreatheMeter: BreatheMeter
 
-    def __init__(self, smellReportLink):
-        self.smellReportLink = smellReportLink
+    def __init__(self, smellReportLink=None):
+        # User could customize the smellReport csv file by link
+        if (smellReportLink == None):
+            self.smellReportLink = smellReportLink
+        else:
+            self.smellReportLink = self.smellReportLink
+
         smellReportDataFrame = self.getSmellReportDataFrame()
+
+        # Initialize different classes for stat analyse
         self.smellReport = SmellReport(smellReportDataFrame)
         self.smellPGHStatistics = SmellPGHStatistics(self.smellReport)
         self.EJAAnalysis = EJAAnalysis(self.smellReport)
         self.BreatheMeter = BreatheMeter()
 
+    # Function that return the smell report datafrome
     def getSmellReportDataFrame(self) -> pd.DataFrame:
         rawSmellReport = pd.read_csv(self.smellReportLink)
-        smellReportDataFrame = smell_report_cleanup.cleanup(rawSmellReport)
+        #Clean up the smell report data entries
+        smellReportDataFrame = self.cleanUp(rawSmellReport)
         return smellReportDataFrame
 
     def cleanUp(self, df) -> pd.DataFrame:
         return smell_report_cleanup.cleanup(df)
 
+    # Run all analysis
     def analyse(self):
         self.smellReport.analyse()
         self.smellPGHStatistics.run()
