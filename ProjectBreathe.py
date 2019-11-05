@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from SmellReport import SmellReport
 from ConceptC import ConceptC
 from EJAAnalysis import EJAAnalysis
-
+from BreatheMeter import BreatheMeter
 # ProjectBreath class contains the report link and smellReport object
 
 
@@ -19,6 +19,7 @@ class ProjectBreathe(object):
     smellReport: SmellReport = None
     conceptC: ConceptC
     EJAAnalysis: EJAAnalysis
+    BreatheMeter: BreatheMeter
 
     def __init__(self, smellReportLink):
         self.smellReportLink = smellReportLink
@@ -26,6 +27,7 @@ class ProjectBreathe(object):
         self.smellReport = SmellReport(smellReportDataFrame)
         self.conceptC = ConceptC(self.smellReport)
         self.EJAAnalysis = EJAAnalysis(self.smellReport)
+        self.BreatheMeter = BreatheMeter()
 
     def getSmellReportDataFrame(self) -> pd.DataFrame:
         rawSmellReport = pd.read_csv(self.smellReportLink)
@@ -39,3 +41,4 @@ class ProjectBreathe(object):
         self.smellReport.analyse()
         self.conceptC.run()
         self.EJAAnalysis.run()
+        self.BreatheMeter.run()

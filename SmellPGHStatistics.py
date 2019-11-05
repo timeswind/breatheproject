@@ -13,7 +13,7 @@ register_matplotlib_converters()
 # the path of demonstrating the air quality to others will be user-friendly to the public.
 
 
-class ConceptC(object):
+class SmellPGHStatistics(object):
     smellReport: SmellReport
     df: pd.DataFrame
 
@@ -49,10 +49,5 @@ class ConceptC(object):
         plt.close()
 
 
-def averageSmellValuePerDay(self) -> pd.DataFrame:
-
-    return None
-
-
-C = ConceptC()
+C = SmellPGHStatistics()
 C.run()
