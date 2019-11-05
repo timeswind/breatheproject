@@ -1,7 +1,7 @@
 import pandas as pd
 
-
-class BreathMeter(object):
+# The breath meter of the breatje project https://breatheproject.org/breathe-meter/
+class BreatheMeter(object):
     default_csv_path = 'data/annual_aqi_by_cbsa_2016.csv'
 
     def __init__(self):
@@ -20,5 +20,5 @@ class BreathMeter(object):
 
 
 #Run as a single file, generate the Breath Meter results in the resutls folder
-BM = BreathMeter()
+BM = BreatheMeter()
 BM.export()
