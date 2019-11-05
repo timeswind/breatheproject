@@ -12,9 +12,9 @@ class BreatheMeter(object):
 
         # user could initialize the class by customize data source of csv file link
         if (csv_file_link == None):
-            self.df = pd.read_csv(csv_file_link)
-        else:
             self.df = pd.read_csv(self.default_csv_path)
+        else:
+            self.df = pd.read_csv(csv_file_link)
         self.calculateRank()
 
     def run(self):

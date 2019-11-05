@@ -1,7 +1,6 @@
 import pandas as pd
 from SmellReport import SmellReport
 import math
-import os.path
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
