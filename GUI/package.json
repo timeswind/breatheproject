@@ -1,14 +1,25 @@
 {
-  "name": "project-breathe-gui",
+  "name": "electron-quick-start",
   "version": "1.0.0",
-  "description": "Graphic Interface For Project Breathe",
-  "main": "index.js",
+  "description": "A minimal Electron application",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron ."
   },
-  "author": "",
-  "license": "ISC",
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^7.0.0"
+    "electron": "^7.1.0"
+  },
+  "dependencies": {
+    "python-shell": "^1.0.8"
   }
 }
