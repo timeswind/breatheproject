@@ -31,14 +31,22 @@ function ResultImage({ imagePath }) {
 function ResultCSV({ csvPath }) {
   var contents = fs.readFileSync(csvPath, 'utf8');
   return (
-    <CsvToHtmlTable data={contents} csvDelimiter="," tableClassName="table table-striped table-hover"/>
+    <CsvToHtmlTable data={contents} csvDelimiter="," tableClassName="table table-striped table-hover" />
   );
+}
+
+const app_status = {
+  WAIT: 'Wait for input',
+  ANALYSING: "Analysing...",
+  SHOW_IMAGE_RESULT: "Image Result",
+  SHOW_DATA_RESULT: "Dataset Result",
+  ERROR: "Error Occured"
 }
 
 class App extends React.Component {
 
   state = {
-    status: "Wait for input",
+    status: app_status.WAIT,
     choosedAnalysisFunction: "select",
     displayImagePath: null,
     displayCsvPath: null
@@ -55,7 +63,6 @@ class App extends React.Component {
   }
 
   selectFunctionOnChange = (value) => {
-    console.log("change")
     this.setState({ choosedAnalysisFunction: value });
   }
 
@@ -63,24 +70,27 @@ class App extends React.Component {
     let self = this
     let selectedFunction = this.state.choosedAnalysisFunction
     let filePath = this.analysisFunctions[selectedFunction]
-    console.log(filePath)
-    this.setState({ status: "Analysing...", displayImagePath: null, displayCsvPath: null })
+    // console.log(filePath)
+    this.setState({ status: app_status.ANALYSING, displayImagePath: null, displayCsvPath: null })
     PythonShell.run(filePath, null, function (err, results) {
-      if (err) throw err;
-      let resultFilePath = results.pop();
-      let ext = path.extname(resultFilePath);
-      let fullFilePath = path.join(workingPath, resultFilePath)
-      if (ext === '.csv') {
-        self.setState({ displayCsvPath: fullFilePath, status: "Dataset Result" })
+      if (err) {
+        self.setState({ displayImagePath: null, displayCsvPath: null, status: app_status.ERROR })
       } else {
-        self.setState({ displayImagePath: fullFilePath, status: "Image Result" })
-        console.log('results', resultFilePath);
+        let resultFilePath = results.pop();
+        let ext = path.extname(resultFilePath);
+        let fullFilePath = path.join(workingPath, resultFilePath)
+        if (ext === '.csv') {
+          self.setState({ displayCsvPath: fullFilePath, status: app_status.SHOW_DATA_RESULT })
+        } else {
+          self.setState({ displayImagePath: fullFilePath, status: app_status.SHOW_IMAGE_RESULT })
+          console.log('results', resultFilePath);
+        }
       }
     });
   }
 
   clear() {
-    this.setState({displayCsvPath: null, displayImagePath: null})
+    this.setState({ displayCsvPath: null, displayImagePath: null })
   }
 
   imagePathToDataURL = function (imagePath) {
@@ -118,7 +128,6 @@ class App extends React.Component {
               />
             </div>
             <div className="element-container">
-
               <Select
                 showSearch
                 style={{ width: 400 }}
@@ -138,9 +147,8 @@ class App extends React.Component {
             </div>
 
             <div className="element-container">
-              <Button type="primary" onClick={() => this.analyse()}>Analyse</Button>
-              <Button onClick={() => this.clear()} style={{marginLeft: "8px"}}>Clear</Button>
-
+              <Button type="primary" onClick={() => this.analyse()} disabled={this.state.status === app_status.ANALYSING}>Analyse</Button>
+              <Button onClick={() => this.clear()} style={{ marginLeft: "8px" }} disabled={this.state.status === app_status.ANALYSING}>Clear</Button>
             </div>
           </div>
 
