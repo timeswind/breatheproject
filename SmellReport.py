@@ -77,7 +77,7 @@ class SmellReport(object):
         self.plotReportsOverMonths()
         self.analyse_corr_smell_pm25()
 
-    def analyse_corr_smell_pm25(self):
+    def analyse_corr_smell_pm25(self) -> str:
 
         corr_df = self.df.copy()
         corr_df = corr_df[self.df.pa_daily_pm25_mean_binned != 0]
@@ -136,6 +136,8 @@ class SmellReport(object):
         plt.ylim(0,)
         plt.savefig(r'results/pa_daily_pm25_mean_binned.png')
         plt.close()
+
+        return r'results/Allegheny_daily_pm25_mean_normalized.png'
 
     def getCorrelationBetween(self, df, column1, column2):
         return df[column1].corr(df[column2])
