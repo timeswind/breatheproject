@@ -17,9 +17,6 @@ class BreatheMeter(object):
             self.df = pd.read_csv(csv_file_link)
         self.calculateRank()
 
-    def run(self):
-        self.export()
-
     # Rank the row by 'Days PM2.5' column value
     def calculateRank(self):
         self.df['pct_rank'] = self.df['Days PM2.5'].rank(pct=True)
@@ -28,14 +25,21 @@ class BreatheMeter(object):
     def cities(self):
         return self.df['CBSA'].unique()
 
-
     # Export the resulting datafram into csv file
-    def export(self):
+    # return the csv file path
+    def export(self) -> str:
+        filePath = r'results/Breath_Meter_2016.csv'
         export_df = self.df[['CBSA', 'pct_rank']]
-        export_df.to_csv('results/Breath_Meter_2016.csv',
-                         index=None, header=True)
+        export_df.to_csv(filePath, index=None, header=True)
+        return filePath
+
+    def run(self) -> str:
+        filePath = self.export()
+        return filePath
 
 
-# Run the test as a single file, generate the Breath Meter results in the resutls folder
-# BM = BreatheMeter()
-# BM.run()
+if __name__ == "__main__":
+    # Run the test as a single file, generate the Breath Meter results in the resutls folder
+    BM = BreatheMeter()
+    filePath = BM.run()
+    print(filePath)

@@ -6,11 +6,12 @@ import pandas as pd
 import seaborn as sns
 import os.path
 import smell_report_cleanup
+import sys
 # SmellReport class initialize the datafrom from data of SmellPitts
 
 
 class SmellReport(object):
-    smellReportLink = 'data/smell_reports.csv'
+    smellReportLink = r'data/smell_reports.csv'
     df = pd.DataFrame()
     zipcodes = []
     epa_pm_25_object: EPAPM25
@@ -175,5 +176,8 @@ class SmellReport(object):
         plt.close()
 
 
-# SP = SmellReport()
-# SP.run()
+# if __name__ == "__main__":
+#     main(sys.argv[1:])
+if __name__ == "__main__":
+    SP = SmellReport()
+    SP.run()

@@ -15,7 +15,7 @@ from BreatheMeter import BreatheMeter
 class ProjectBreathe(object):
 
     # default smell report csv file link
-    smellReportLink = 'data/smell_reports.csv'
+    smellReportLink = r'data/smell_reports.csv'
     smellReport: SmellReport = None
     smellPGHStatistics: SmellPGHStatistics
     EJAAnalysis: EJAAnalysis

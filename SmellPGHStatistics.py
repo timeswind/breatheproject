@@ -15,6 +15,7 @@ register_matplotlib_converters()
 
 
 class SmellPGHStatistics(object):
+    resultImagePath = r'results/compare_bewteen_smell_value_and_pm25_history_line.png'
     smellReport: SmellReport
     df: pd.DataFrame
 
@@ -24,7 +25,7 @@ class SmellPGHStatistics(object):
         else:
             self.smellReport = smellReport
 
-    def run(self):
+    def run(self) -> str:
         self.df = self.smellReport.df.drop(['lat', 'long', 'zipcode', 'year', 'month', 'day',
                                             'isAfternoon', 'isEvening', 'isMorning', 'isNight'], axis=1, inplace=False)
         self.df = self.df.groupby('date').mean()
@@ -49,7 +50,7 @@ class SmellPGHStatistics(object):
             self.df["Allegheny_daily_pm25_mean"].max()
 
         self.plot()
-        return None
+        return self.resultImagePath
 
     def plot(self):
         my_dpi = 100
@@ -65,15 +66,14 @@ class SmellPGHStatistics(object):
 
         ax2 = ax.twinx()
         lns3 = ax2.plot('date', 'bucketted_allegheny_daily_pm25_mean', data=self.df, marker='o', markerfacecolor='green',
-                markersize=1, color='green', linewidth=1, label="Smell Value Normalized")
+                markersize=1, color='green', linewidth=1, label="Air Quality")
         lns = lns1+lns2+lns3
         labs = [l.get_label() for l in lns]
         ax.legend(lns, labs, loc=0)
-        plt.savefig(
-            r'results/compare_bewteen_smell_value_and_pm25_history_line.png')
+        plt.savefig(self.resultImagePath)
         plt.close()
 
-
-# test only
-# SPS = SmellPGHStatistics()
-# SPS.run()
+if __name__ == "__main__":
+    SPS = SmellPGHStatistics()
+    resultImagePath = SPS.run()
+    print(resultImagePath)
