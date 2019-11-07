@@ -1,44 +1,135 @@
 import React from 'react';
-import logo from './logo.svg';
+import { DatePicker, Button, Select } from 'antd';
 import './App.css';
+import 'antd/dist/antd.css';
 import { PythonShell } from 'python-shell';
+import { throws } from 'assert';
+import process from 'process';
+import path from 'path';
+import moment from 'moment';
+const nativeImage = require('electron').nativeImage
 
-function App() {
 
-  function test() {
-    PythonShell.run('../hello.py', null, function (err, results) {
+const { Option } = Select;
+
+const { MonthPicker, RangePicker } = DatePicker;
+
+const dateFormat = 'YYYY/MM/DD';
+const monthFormat = 'YYYY/MM';
+
+const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
+
+let pathname = process.cwd()
+let workingPath = path.dirname(pathname);
+console.log(workingPath)
+PythonShell.defaultOptions = { scriptPath: workingPath, cwd: workingPath };
+
+
+function ResultImage({ imagePath }) {
+  let image = nativeImage.createFromPath(imagePath)
+  return (
+    <img src={image.toDataURL()} className="result-plot-image" />
+  );
+}
+
+class App extends React.Component {
+
+  state = {
+    choosedAnalysisFunction: "select",
+    displayImagePath: '/Users/mingtianyang/Documents/Penn State/2019fall/EDSGN460/python program/results/Allegheny_daily_pm25_mean_binned.png'
+  }
+
+  analysisFunctions = {
+    "smellReport": "SmellReport.py",
+    "BreatheMeter": "BreatheMeter.py",
+    "smellPGHStatistics": "SmellPGHStatistics.py"
+  }
+
+  selectFunctionOnChange = (value) => {
+    console.log("change")
+    this.setState({ choosedAnalysisFunction: value });
+  }
+
+  test() {
+    let self = this
+    let selectedFunction = this.state.choosedAnalysisFunction
+    let filePath = this.analysisFunctions[selectedFunction]
+    console.log(filePath)
+
+    PythonShell.run(filePath, null, function (err, results) {
       if (err) throw err;
-      console.log('hello.py finished.');
-      console.log('results', results);
+      let resultFilePath = results.pop();
+      let imageFilePath = path.join(workingPath, resultFilePath)
+      self.setState({ displayImagePath: imageFilePath })
+      console.log('results', resultFilePath);
     });
   }
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a> */}
+  imagePathToDataURL = function (imagePath) {
+    console.log()
+    let image = nativeImage.createFromPath(imagePath)
+    return image.toDataURL
+  }
 
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          {/* <img src={logo} className="App-logo" alt="logo" />
+          <p>
+            Edit <code>src/App.js</code> and save to reload.
+          </p>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a> */}
+          <div className="element-container">
+            <RangePicker
+              defaultValue={[moment('2016/06/01', dateFormat), moment('2018/12/31', dateFormat)]}
+              format={dateFormat}
+            />
+          </div>
+          <div className="element-container">
+
+            <Select
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Please choose an analysis function"
+              optionFilterProp="children"
+              onChange={this.selectFunctionOnChange}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              <Option value="smellReport">smellReport</Option>
+
+              <Option value="smellPGHStatistics">smellPGHStatistics</Option>
+              <Option value="EJAAnalysis">EJAAnalysis</Option>
+              <Option value="BreatheMeter">BreatheMeter</Option>
+            </Select>
+          </div>
+
+          <div className="element-container">
+            <Button type="primary" onClick={() => this.test()}>Analyse</Button>
+          </div>
+
+        </header>
         <div>
-          Start Date:
-    <input type="date" name="start_date" />
-          End Date:
-    <input type="date" name="end_date" />
+
         </div>
-        <button onClick={test}></button>
-      </header>
-    </div>
-  );
+        <div>
+          <h2>Results</h2>
+          {this.state.displayImagePath !== null && (
+            <ResultImage imagePath={this.state.displayImagePath} />
+          )}
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;

@@ -24,6 +24,7 @@
     }
   },
   "dependencies": {
+    "antd": "^3.25.0",
     "electron-is-dev": "^1.0.1",
     "python-shell": "^1.0.8",
     "react": "^16.8.3",
