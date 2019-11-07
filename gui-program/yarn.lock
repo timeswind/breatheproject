@@ -9832,6 +9832,11 @@ react-app-polyfill@^0.2.1:
     raf "3.4.1"
     whatwg-fetch "3.0.0"
 
+react-csv-to-table@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/react-csv-to-table/-/react-csv-to-table-0.0.2.tgz#0a363031d120a3b9ac23dfdca10dd2514de8f99f"
+  integrity sha512-TP9yS+hAby4Ehuml3juNDUHxPROs4YgZF5slTZHGhePkIPefLfPKcGEw/9c0s2xQFisjRHukep3C6hFGlGKm6A==
+
 react-dev-utils@^7.0.0, react-dev-utils@^7.0.3:
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-7.0.5.tgz#cb95375d01ae71ca27b3c7616006ef7a77d14e8e"

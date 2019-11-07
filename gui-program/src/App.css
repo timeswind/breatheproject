@@ -3,6 +3,24 @@
   padding: 16px 32px
 }
 
+#breatheproject-logo {
+  height: 80px;
+}
+
+#pennstate-logo {
+  height: 80px;
+}
+
+.logo_header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin: 16px 0;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #ddd;
+}
+
 /* .App-logo {
   height: 40vmin;
 } */
@@ -27,4 +45,11 @@
 
 .element-container {
   margin: 5px 0
+}
+
+.form_section {
+  padding: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
 }
