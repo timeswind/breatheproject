@@ -3,3 +3,4 @@ EDSIGN460.code-workspace
 .DS_Store
 results/*
 node_modules
+gui-program/ProjectBreathe.app/

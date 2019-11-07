@@ -8,7 +8,7 @@ proj = Transformer.from_crs(crs.geodetic_crs, crs)
 
 
 class EJAAnalysis(object):
-
+    resultImagePath = r'results/EJA_smell_report.png'
     # Geo-Coordinate Object that have latitude and longitude
     class Coordinate(object):
         def __init__(self, lat: float, long: float):
@@ -86,8 +86,10 @@ class EJAAnalysis(object):
 
         # Draw report points in the map and save to results folder
         plt.scatter(self.df['cartesian x'], self.df['cartesian y'], s=0.1)
-        plt.savefig(r'results/EJA_smell_report.png', dpi=800)
+        plt.savefig(self.resultImagePath, dpi=800)
         plt.close()
+
+        return self.resultImagePath
 
     # A curry function that take the offset and return another function
     # The returned function takes in a row of panda dataframe and returned a cartesian coordinate
@@ -105,4 +107,5 @@ class EJAAnalysis(object):
 if __name__ == "__main__":
     # Run the test as a single file by 'python3 EJAAnalysis.py', get the results in the results folder
     test = EJAAnalysis()
-    test.run()
+    resultImagePath = test.run()
+    print(resultImagePath)

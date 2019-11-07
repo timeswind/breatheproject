@@ -9,19 +9,14 @@ import path from 'path';
 import moment from 'moment';
 const nativeImage = require('electron').nativeImage
 
-
 const { Option } = Select;
-
 const { MonthPicker, RangePicker } = DatePicker;
-
 const dateFormat = 'YYYY/MM/DD';
 const monthFormat = 'YYYY/MM';
-
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY'];
 
 let pathname = process.cwd()
 let workingPath = path.dirname(pathname);
-console.log(workingPath)
 PythonShell.defaultOptions = { scriptPath: workingPath, cwd: workingPath };
 
 
@@ -35,14 +30,19 @@ function ResultImage({ imagePath }) {
 class App extends React.Component {
 
   state = {
+    status: "Wait for input",
     choosedAnalysisFunction: "select",
-    displayImagePath: '/Users/mingtianyang/Documents/Penn State/2019fall/EDSGN460/python program/results/Allegheny_daily_pm25_mean_binned.png'
+    displayImagePath: null
   }
+
+  // '/Users/mingtianyang/Documents/Penn State/2019fall/EDSGN460/python program/results/Allegheny_daily_pm25_mean_binned.png'
 
   analysisFunctions = {
     "smellReport": "SmellReport.py",
     "BreatheMeter": "BreatheMeter.py",
-    "smellPGHStatistics": "SmellPGHStatistics.py"
+    "smellPGHStatistics": "SmellPGHStatistics.py",
+    "EJAAnalysis": "EJAAnalysis.py",
+    "AppUsage": "AppUsage.py"
   }
 
   selectFunctionOnChange = (value) => {
@@ -55,12 +55,12 @@ class App extends React.Component {
     let selectedFunction = this.state.choosedAnalysisFunction
     let filePath = this.analysisFunctions[selectedFunction]
     console.log(filePath)
-
+    this.setState({status: "Analysing...", displayImagePath: null})
     PythonShell.run(filePath, null, function (err, results) {
       if (err) throw err;
       let resultFilePath = results.pop();
       let imageFilePath = path.join(workingPath, resultFilePath)
-      self.setState({ displayImagePath: imageFilePath })
+      self.setState({ displayImagePath: imageFilePath, status: "Result" })
       console.log('results', resultFilePath);
     });
   }
@@ -110,6 +110,7 @@ class App extends React.Component {
               <Option value="smellPGHStatistics">smellPGHStatistics</Option>
               <Option value="EJAAnalysis">EJAAnalysis</Option>
               <Option value="BreatheMeter">BreatheMeter</Option>
+              <Option value="AppUsage">AppUsage</Option>
             </Select>
           </div>
 
@@ -122,7 +123,7 @@ class App extends React.Component {
 
         </div>
         <div>
-          <h2>Results</h2>
+          <h2>{this.state.status}</h2>
           {this.state.displayImagePath !== null && (
             <ResultImage imagePath={this.state.displayImagePath} />
           )}

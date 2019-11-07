@@ -149,7 +149,7 @@ class SmellReport(object):
     def reportsOverYears(self):
         return []
 
-    def plotReportsOverMonths(self):
+    def plotReportsOverMonths(self) -> str:
         yearMonthGroups = self.df.groupby(["year", "month"])
         label = []
         no_users = []
@@ -174,6 +174,7 @@ class SmellReport(object):
 
         plt.savefig(os.path.join(os.getcwd(), file_to_open))
         plt.close()
+        return file_to_open
 
 
 # if __name__ == "__main__":
