@@ -90,7 +90,7 @@ class App extends React.Component {
   }
 
   clear() {
-    this.setState({ displayCsvPath: null, displayImagePath: null })
+    this.setState({ displayCsvPath: null, displayImagePath: null, status: app_status.WAIT })
   }
 
   imagePathToDataURL = function (imagePath) {
