@@ -12,3 +12,9 @@ def groupByZipCode(df:pd.DataFrame) -> pd.DataFrame:
 def getAllZipCodes(df:pd.DataFrame) -> list:
     groups = groupByZipCode(df).groups
     return list(groups.keys())
+
+def customizeDateRange(df: pd.DataFrame, date_column_name:str,  start, end) -> pd.DataFrame:
+    df = df[df[date_column_name] > start]
+    df = df[df[date_column_name] < end]
+    df = df.reset_index()
+    return df

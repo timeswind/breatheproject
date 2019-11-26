@@ -49,7 +49,8 @@ class App extends React.Component {
     status: app_status.WAIT,
     choosedAnalysisFunction: "select",
     displayImagePath: null,
-    displayCsvPath: null
+    displayCsvPath: null,
+    dateRange: ["2016-06-01", "2018-12-31"]
   }
 
   // '/Users/mingtianyang/Documents/Penn State/2019fall/EDSGN460/python program/results/Allegheny_daily_pm25_mean_binned.png'
@@ -70,11 +71,15 @@ class App extends React.Component {
   analyse() {
     let self = this
     let selectedFunction = this.state.choosedAnalysisFunction
-    let filePath = this.analysisFunctions[selectedFunction]
-    // console.log(filePath)
+    var filepath = this.analysisFunctions[selectedFunction]
+    let options = {
+      args: ['-s' + self.state.dateRange[0], "-e" + self.state.dateRange[1]]
+    };
+
     this.setState({ status: app_status.ANALYSING, displayImagePath: null, displayCsvPath: null })
-    PythonShell.run(filePath, null, function (err, results) {
+    PythonShell.run(filepath, options, function (err, results) {
       if (err) {
+        console.log(err)
         self.setState({ displayImagePath: null, displayCsvPath: null, status: app_status.ERROR })
       } else {
         let resultFilePath = results.pop();
@@ -98,6 +103,12 @@ class App extends React.Component {
     console.log()
     let image = nativeImage.createFromPath(imagePath)
     return image.toDataURL
+  }
+
+  rangeOnChange = (dates, dateStrings) => {
+    let start = dateStrings[0].replace(/\//g, '-')
+    let end = dateStrings[1].replace(/\//g, '-')
+    this.setState({dateRange: [start, end]})
   }
 
   render() {
@@ -126,6 +137,7 @@ class App extends React.Component {
               <RangePicker
                 defaultValue={[moment('2016/06/01', dateFormat), moment('2018/12/31', dateFormat)]}
                 format={dateFormat}
+                onChange={this.rangeOnChange}
               />
             </div>
             <div className="element-container">
@@ -144,11 +156,13 @@ class App extends React.Component {
                 <Option value="EJAAnalysis">EJAAnalysis</Option>
                 <Option value="BreatheMeter">BreatheMeter</Option>
                 <Option value="AppUsage">AppUsage</Option>
+                <Option value="AirQualityByZipCode">AirQualityByZipCode</Option>
+
               </Select>
             </div>
 
             <div className="element-container">
-              <Button type="primary" onClick={() => this.analyse()} disabled={this.state.status === app_status.ANALYSING}>Analyse</Button>
+              <Button type="primary" onClick={() => this.analyse()} disabled={this.state.status === app_status.ANALYSING || this.state.choosedAnalysisFunction === "select"}>Analyse</Button>
               <Button onClick={() => this.clear()} style={{ marginLeft: "8px" }} disabled={this.state.status === app_status.ANALYSING}>Clear</Button>
             </div>
           </div>

@@ -1,11 +1,5 @@
 import pandas as pd
 
-def customizeDateRange(df: pd.DataFrame, start, end) -> pd.DataFrame:
-    df = df[df["date&time"] > start]
-    df = df[df["date&time"] < end]
-    df = df.reset_index()
-    return df
-
 def cleanup(df: pd.DataFrame) -> pd.DataFrame:
     df["date&time"] = pd.to_datetime(df['epoch time'], unit='s')
     df['date'] = pd.DatetimeIndex(df['date&time']).date

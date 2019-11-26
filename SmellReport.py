@@ -47,7 +47,7 @@ class SmellReport(object):
         # example
         # python3 SmellReport.py -s 2016-06-02 -e 2016-06-03
         if (startDate is not None and endDate is not None):
-            self.df = smell_report_cleanup.customizeDateRange(self.df, startDate, endDate)
+            self.df = analyse.customizeDateRange(self.df, date_column_name="date&time", start=startDate, end=endDate)
 
         self.zipCodes = self.getZipCodes()
         self.initialize_epa_pm25_data()
