@@ -9,6 +9,7 @@ from SmellReport import SmellReport
 from SmellPGHStatistics import SmellPGHStatistics
 from EJAAnalysis import EJAAnalysis
 from BreatheMeter import BreatheMeter
+from AirQualityByZipCode import AirQualityByZipCode
 # ProjectBreath class contains the report link and smellReport object
 
 
@@ -35,6 +36,7 @@ class ProjectBreathe(object):
         self.smellPGHStatistics = SmellPGHStatistics(self.smellReport)
         self.EJAAnalysis = EJAAnalysis(self.smellReport)
         self.BreatheMeter = BreatheMeter()
+        self.AirQualityByZipCode = AirQualityByZipCode()
 
     # Function that return the smell report datafrome
     def getSmellReportDataFrame(self) -> pd.DataFrame:
@@ -52,3 +54,5 @@ class ProjectBreathe(object):
         self.smellPGHStatistics.run()
         self.EJAAnalysis.run()
         self.BreatheMeter.run()
+        self.AirQualityByZipCode.run()
+
