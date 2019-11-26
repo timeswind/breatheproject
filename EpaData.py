@@ -53,6 +53,7 @@ class EPAPM25(EPAdata):
     def get_mean_cols_group_by(self, column: str):
         counties = self.dataframe['COUNTY'].unique()
         self.daily_pm25_mean_cols_by_county = {}
+
         for county in counties:
             self.counties.append(county)
             filterByCounty = self.dataframe[self.dataframe['COUNTY']==county]

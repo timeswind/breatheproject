@@ -1,5 +1,6 @@
 import numpy as np
 import analyse
+import tools
 from EpaData import EPAPM25
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -7,6 +8,8 @@ import seaborn as sns
 import os.path
 import smell_report_cleanup
 import sys
+import argparse
+parser = argparse.ArgumentParser()
 # SmellReport class initialize the datafrom from data of SmellPitts
 
 
@@ -17,6 +20,26 @@ class SmellReport(object):
     epa_pm_25_object: EPAPM25
 
     def __init__(self, dataframe=None):
+        parser.add_argument("-t", "--test", help="test run flag", type=tools.str2bool, nargs='?',
+                            const=True, default=False,)
+        parser.add_argument("-s",
+                            "--startdate",
+                            help="The Start Date - format YYYY-MM-DD",
+                            required=False,
+                            type=tools.valid_date)
+        parser.add_argument("-e",
+                            "--enddate",
+                            help="The End Date - format YYYY-MM-DD",
+                            required=False,
+                            type=tools.valid_date)
+
+        args = parser.parse_args()
+        isTest: bool = args.test
+        startDate: str = args.startdate
+        endDate: str = args.enddate
+
+        print(startDate)
+
         if (dataframe is not None):
             self.df = dataframe
         else:
@@ -51,11 +74,7 @@ class SmellReport(object):
         self.df = self.df.set_index(['date'])
 
         daily_pm25_mean_cols_by_county = self.epa_pm_25_object.daily_pm25_mean_cols_by_county
-        # for county in daily_pm25_mean_cols_by_county:
-        # self.df[county + '_daily_pm25_mean'] = daily_pm25_mean_cols_by_county[county]
-        # self.df.astype({county + '_daily_pm25_mean': 'float64'}).dtypes
-        # self.df[county + '_daily_pm25_mean_binned'] = pd.cut(self.df[county + '_daily_pm25_mean'], 5, labels=pm_25_level_labels)
-
+        
         self.df['Allegheny_daily_pm25_mean'] = daily_pm25_mean_cols_by_county['Allegheny']
         self.df.astype({'Allegheny_daily_pm25_mean': 'float64'}).dtypes
         self.df['Allegheny_daily_pm25_mean_binned'] = pd.cut(
@@ -81,6 +100,7 @@ class SmellReport(object):
 
         corr_df = self.df.copy()
         corr_df = corr_df[self.df.pa_daily_pm25_mean_binned != 0]
+
         # normalize smell value and pm25 readings
         SmellValueNormalized = corr_df["smell value"] / \
             corr_df["smell value"].max()
@@ -90,19 +110,10 @@ class SmellReport(object):
             corr_df["Allegheny_daily_pm25_mean"].max()
         corr_df["Allegheny_daily_pm25_mean_normalized"] = Allegheny_Daily_PM25_mean_Normalized
 
-        #corr_smell_pm25_counties = {}
-        # for county in self.epa_pm_25_object.counties:
-        #     corr = self.getCorrelationBetween(
-        #         'smell value', county + '_daily_pm25_mean')
-        #     corr_smell_pm25_counties[county] = corr
-        #     print("The correlation bewteen smell value user reported and average pm2.5 in %s at that day is %f" % (
-        #         county, corr))
-
         Allegheny_corr_smell_pm25 = self.getCorrelationBetween(corr_df,
                                                                'smell value', 'Allegheny' + '_daily_pm25_mean')
         Allegheny_corr_smell_pm25_normalized = self.getCorrelationBetween(corr_df,
                                                                           'smell value normalized', 'Allegheny_daily_pm25_mean_normalized')
-        # corr_smell_pm25_counties['Allegheny'] = corr
         print("The correlation bewteen smell value user reported and average pm2.5 in %s at that day is %f" % (
             'Allegheny', Allegheny_corr_smell_pm25))
         print("The correlation bewteen NORMALIZED smell value user reported and average pm2.5 in %s at that day is %f" % (
@@ -113,12 +124,7 @@ class SmellReport(object):
 
         print("The correlation bewteen smell value user reported and average pm2.5 in Pennsylvania at that day is %f" % PA_corr_smell_pm25)
         print("** We could see there is no correlation between user reported smell value and the actualy pm2.5 level")
-        # for county in self.epa_pm_25_object.counties:
-        #     sns.regplot(x=county+"_daily_pm25_mean",
-        #                 y="smell value", data=self.df)
-        #     plt.ylim(0,)
-        #     plt.savefig(r'results/'+county+'_daily_pm25_mean.png')
-        #     plt.close()
+
         sns.regplot(x="Allegheny_daily_pm25_mean_binned",
                     y="smell value", data=corr_df)
         plt.ylim(0,)
@@ -179,8 +185,6 @@ class SmellReport(object):
         return file_to_open
 
 
-# if __name__ == "__main__":
-#     main(sys.argv[1:])
 if __name__ == "__main__":
     SP = SmellReport()
     SP.run()
