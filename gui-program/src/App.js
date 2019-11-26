@@ -59,7 +59,8 @@ class App extends React.Component {
     "smellPGHStatistics": "SmellPGHStatistics.py",
     "EJAAnalysis": "EJAAnalysis.py",
     "AppUsage": "AppUsage.py",
-    "SmellValueAndPM25": "SmellValueAndPM25.py"
+    "SmellValueAndPM25": "SmellValueAndPM25.py",
+    "AirQualityByZipCode": "AirQualityByZipCode.py"
   }
 
   selectFunctionOnChange = (value) => {
