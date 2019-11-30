@@ -2,6 +2,10 @@ import pandas as pd
 from SmellReport import SmellReport
 from pyproj import CRS, Transformer
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import numpy as np
+import matplotlib.patches as mpatches
+
 
 crs = CRS.from_epsg(3857)
 proj = Transformer.from_crs(crs.geodetic_crs, crs)
@@ -25,8 +29,8 @@ class EJAAnalysis(object):
     # a1 and a2 are the origin and ending point of the retangle
     # The picture is in data folder named EJAMAP_PITTSBURG.png
     # We use these two points as offsets to plot geo-tagged smell reports
-    a1 = Coordinate(lat=40.518257, long=-80.132828)
-    a2 = Coordinate(lat=40.334705, long=-79.705593)
+    a1 = Coordinate(lat=40.552488, long=-80.117494)
+    a2 = Coordinate(lat=40.285871, long=-79.725970)
 
     def __init__(self, smellReport: SmellReport = None):
         if (smellReport == None):
@@ -38,8 +42,20 @@ class EJAAnalysis(object):
 
     def run(self):
         # Drop the unwanted columns for this analyis
-        self.df.drop(['Allegheny_daily_pm25_mean', 'Allegheny_daily_pm25_mean_binned', 'pa_daily_pm25_mean', 'pa_daily_pm25_mean_binned',
-                      'date&time', 'isAfternoon', 'isEvening', 'isMorning', 'isNight', 'year', 'month', 'day', 'zipcode'], axis=1, inplace=True)
+        df = self.df
+        df = df.reset_index()
+        df = df[['year', 'lat', 'long']]
+        # sort the dataframe
+        df.sort_values(by=['year'])
+        # set the index to be this and don't drop
+        df.set_index(keys=['year'], drop=False,inplace=True)
+        # get a list of names
+        years=df['year'].unique().tolist()
+        # now we can perform a lookup on a 'view' of the dataframe
+        
+        analyseDataframe = df
+        print(analyseDataframe)
+        # now you can query all 'joes'
 
         # Project the origin into 2d plane with cartesian coordinates
         origin_in_cartesian = proj.transform(self.a1.lat, self.a1.long)
@@ -53,24 +69,24 @@ class EJAAnalysis(object):
         endpoint_y = float(endpoint_in_cartesian[1])
         self.endpoint = self.Cartesian(x=endpoint_x, y=endpoint_y)
 
-        # translate latitude and longitude for each row in smell reports into cartesian coordinates in turple format
-        self.df['cartesian'] = self.smellReport.df[['lat', 'long']].apply(
-            self.geodeticToCrs(offset=(self.origin.x, self.origin.y)), axis=1)
-
-        # Seperate the coordiante into two seperate column
-        new_col_list = ['cartesian x', 'cartesian y']
-        for n, col in enumerate(new_col_list):
-            self.df[col] = self.df['cartesian'].apply(
-                lambda location: location[n])
-
-        # discard the intermeidate data column
-        self.df.drop('cartesian', axis=1, inplace=True)
-
         # set the boundary for the sactter plot
         minX = 0
         maxX = self.endpoint.x - self.origin.x
         minY = self.endpoint.y - self.origin.y
         maxY = 0
+
+        # translate latitude and longitude for each row in smell reports into cartesian coordinates in turple format
+        analyseDataframe['cartesian'] = analyseDataframe[['lat', 'long']].apply(self.geodeticToCrs(offset=(self.origin.x, self.origin.y)), axis=1)
+
+        # Seperate the coordiante into two seperate column
+        new_col_list = ['cartesian x', 'cartesian y']
+        for n, col in enumerate(new_col_list):
+            analyseDataframe[col] = analyseDataframe['cartesian'].apply(
+                lambda location: location[n])
+
+        # discard the intermeidate data column
+        analyseDataframe.drop('cartesian', axis=1, inplace=True)
+
 
         # Grab the image for EJA area map
         img = plt.imread(r"data/EJAMAP_PITTSBURG.png")
@@ -79,13 +95,20 @@ class EJAAnalysis(object):
         ax.imshow(img, extent=[minX, maxX, minY, maxY])
 
         # Filter the data to include reports in the map area only
-        self.df = self.df[self.df['cartesian x'] > 0]
-        self.df = self.df[self.df['cartesian x'] < maxX]
-        self.df = self.df[self.df['cartesian y'] < 0]
-        self.df = self.df[self.df['cartesian y'] > minY]
+        analyseDataframe = analyseDataframe[analyseDataframe['cartesian x'] > 0]
+        analyseDataframe = analyseDataframe[analyseDataframe['cartesian x'] < maxX]
+        analyseDataframe = analyseDataframe[analyseDataframe['cartesian y'] < 0]
+        analyseDataframe = analyseDataframe[analyseDataframe['cartesian y'] > minY]
 
         # Draw report points in the map and save to results folder
-        plt.scatter(self.df['cartesian x'], self.df['cartesian y'], s=0.1)
+        colors = cm.rainbow(np.linspace(0, 1, len(years)))
+        recs = []
+        for year, c in zip(years, colors):
+            year_analyseDataframe = analyseDataframe.loc[analyseDataframe.year==year]
+            plt.scatter(year_analyseDataframe['cartesian x'], year_analyseDataframe['cartesian y'], s=0.1, color=c, alpha=0.5)
+            recs.append(mpatches.Rectangle((0,0),1,1,fc=c))
+            
+        plt.legend(recs,years,loc=4)
         plt.savefig(self.resultImagePath, dpi=800)
         plt.close()
 
