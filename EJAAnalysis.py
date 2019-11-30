@@ -13,6 +13,7 @@ proj = Transformer.from_crs(crs.geodetic_crs, crs)
 
 class EJAAnalysis(object):
     resultImagePath = r'results/EJA_smell_report.png'
+    resultImagePathKey = r'results/EJA_smell_report'
     # Geo-Coordinate Object that have latitude and longitude
     class Coordinate(object):
         def __init__(self, lat: float, long: float):
@@ -111,6 +112,19 @@ class EJAAnalysis(object):
         plt.legend(recs,years,loc=4)
         plt.savefig(self.resultImagePath, dpi=800)
         plt.close()
+
+        for year, c in zip(years, colors):
+            # Grab the image for EJA area map
+            img = plt.imread(r"data/EJAMAP_PITTSBURG.png")
+            # Add the map to the plot
+            fig, ax = plt.subplots()
+            ax.imshow(img, extent=[minX, maxX, minY, maxY])
+            year_analyseDataframe = analyseDataframe.loc[analyseDataframe.year==year]
+            plt.scatter(year_analyseDataframe['cartesian x'], year_analyseDataframe['cartesian y'], s=0.1, color=c, alpha=0.5)
+            recs.append(mpatches.Rectangle((0,0),1,1,fc=c))
+            plt.legend(recs,years,loc=4)
+            plt.savefig(self.resultImagePathKey + '_' + str(year) + '.png', dpi=800)
+            plt.close()
 
         return self.resultImagePath
 
