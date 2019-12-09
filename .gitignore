@@ -4,3 +4,4 @@ EDSIGN460.code-workspace
 results/*
 node_modules
 gui-program/ProjectBreathe.app/
+*.icloud
