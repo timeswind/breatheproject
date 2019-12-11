@@ -4,20 +4,44 @@ import './App.css';
 import fs from 'fs'
 import 'antd/dist/antd.css';
 import { PythonShell } from 'python-shell';
-import process from 'process';
+// import process from 'process';
 import path from 'path';
 import moment from 'moment';
 import { CsvToHtmlTable } from 'react-csv-to-table';
 
-const nativeImage = require('electron').nativeImage
-
+/* use `path` to create the full path to our asset */
+const electron = require('electron');
+const nativeImage = electron.nativeImage;
+const isDev = require('electron-is-dev');
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 
-let pathname = process.cwd()
-let workingPath = path.dirname(pathname);
-PythonShell.defaultOptions = { scriptPath: workingPath, cwd: workingPath };
+let appRoot = require('electron').remote.app.getAppPath()
+let appDataDir = require('electron').remote.app.getAppPath('appData')
+let appDataEsacpe = appDataDir.replace(/(\s+)/g, '\\$1')
+console.log("-rpath", appDataEsacpe)
+
+
+
+let resultFolderDir = path.join(appDataDir, 'results')
+
+if (!fs.existsSync(resultFolderDir)) {
+  fs.mkdirSync(resultFolderDir);
+}
+
+var workingPath = path.join(appRoot, 'build', 'python_files')
+
+if (isDev) {
+  workingPath = path.join(appRoot, 'public', 'python_files')
+}
+
+
+PythonShell.defaultOptions = {
+  pythonPath: '/usr/local/bin/python3',
+  scriptPath: workingPath,
+  cwd: workingPath
+};
 
 
 function ResultImage({ imagePath }) {
@@ -73,7 +97,7 @@ class App extends React.Component {
     let selectedFunction = this.state.choosedAnalysisFunction
     var filepath = this.analysisFunctions[selectedFunction]
     let options = {
-      args: ['-s' + self.state.dateRange[0], "-e" + self.state.dateRange[1]]
+      args: ["-s" + self.state.dateRange[0], "-e" + self.state.dateRange[1]]
     };
 
     this.setState({ status: app_status.ANALYSING, displayImagePath: null, displayCsvPath: null })
@@ -108,7 +132,7 @@ class App extends React.Component {
   rangeOnChange = (dates, dateStrings) => {
     let start = dateStrings[0].replace(/\//g, '-')
     let end = dateStrings[1].replace(/\//g, '-')
-    this.setState({dateRange: [start, end]})
+    this.setState({ dateRange: [start, end] })
   }
 
   render() {
@@ -116,8 +140,8 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <div className="logo_header">
-            <img src={'/logo_BreatheProject3-1024x483.png'} id="breatheproject-logo" alt="breatheproject logo" />
-            <img src={'/PS_HOR_RGB_2C.png'} id="pennstate-logo" alt="pennstate logo" />
+            <img src={'logo_BreatheProject3-1024x483.png'} id="breatheproject-logo" alt="breatheproject logo" />
+            <img src={'PS_HOR_RGB_2C.png'} id="pennstate-logo" alt="pennstate logo" />
 
           </div>
           {/* <img src={logo} className="App-logo" alt="logo" />
