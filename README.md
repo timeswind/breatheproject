@@ -2,6 +2,27 @@
 
 EDSGN 460 Team Breathe Project
 
+## GUI Program
+
+1.To run the GUI Program, make sure to install Node v13
+[Click this to download nodejs](https://nodejs.org)
+
+2.After Node is install, check the version for node and npm(nodejs package manager) by running command
+"node -v"
+"npm -v"
+
+3.Use npm to install tool 'yarn' by 'npm install -g yarn'
+check yarn's version
+"yarn -v"
+
+4.Go to gui_program folder in current directory
+"cd gui-program"
+
+5.Run 'yarn' to install all the dependencies
+
+6.Run 'yarn electron-dev' to start the GUI program
+
+
 ## Document
 
 Document about this project
