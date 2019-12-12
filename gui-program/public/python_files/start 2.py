@@ -30,9 +30,21 @@ def start():
 if __name__ == "__main__":
     parser.add_argument("-t", "--test", help="test run flag", type=tools.str2bool, nargs='?',
                         const=True, default=False,)
+    parser.add_argument("-s",
+                        "--startdate",
+                        help="The Start Date - format YYYY-MM-DD",
+                        required=False,
+                        type=tools.valid_date)
+    parser.add_argument("-e",
+                        "--enddate",
+                        help="The End Date - format YYYY-MM-DD",
+                        required=False,
+                        type=tools.valid_date)
 
     args = parser.parse_args()
     isTest: bool = args.test
+    startDate: str = args.startdate
+    endDate: str = args.enddate
 
     if (isTest):
         test()

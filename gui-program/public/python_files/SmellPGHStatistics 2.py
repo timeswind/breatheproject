@@ -15,7 +15,7 @@ register_matplotlib_converters()
 
 
 class SmellPGHStatistics(object):
-    resultImagePath = r"results/compare_bewteen_smell_value_and_pm25_history_line.png"
+    resultImagePath = r'results/compare_bewteen_smell_value_and_pm25_history_line.png'
     smellReport: SmellReport
     df: pd.DataFrame
 

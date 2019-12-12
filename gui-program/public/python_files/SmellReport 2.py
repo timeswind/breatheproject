@@ -9,7 +9,7 @@ import os.path
 import smell_report_cleanup
 import sys
 import argparse
-parser = argparse.ArgumentParser(conflict_handler='resolve')
+parser = argparse.ArgumentParser()
 # SmellReport class initialize the datafrom from data of SmellPitts
 
 
@@ -20,7 +20,8 @@ class SmellReport(object):
     epa_pm_25_object: EPAPM25
 
     def __init__(self, dataframe=None):
-
+        parser.add_argument("-t", "--test", help="test run flag", type=tools.str2bool, nargs='?',
+                            const=True, default=False,)
         parser.add_argument("-s",
                             "--startdate",
                             help="The Start Date - format YYYY-MM-DD",
@@ -33,9 +34,9 @@ class SmellReport(object):
                             type=tools.valid_date)
 
         args = parser.parse_args()
+        isTest: bool = args.test
         startDate: str = args.startdate
         endDate: str = args.enddate
-
 
         if (dataframe is not None):
             self.df = dataframe
@@ -182,12 +183,10 @@ class SmellReport(object):
         plt.xticks(index, label, fontsize=5, rotation=30)
         plt.figtext(0.99, 0.95, description,
                     horizontalalignment='right', fontsize=8)
-        
-        # print(tools.getWriteFilePath(file_to_open))
-        savePath = file_to_open
-        plt.savefig(savePath)
+
+        plt.savefig(os.path.join(os.getcwd(), file_to_open))
         plt.close()
-        return savePath
+        return file_to_open
 
 
 if __name__ == "__main__":

@@ -12,8 +12,8 @@ proj = Transformer.from_crs(crs.geodetic_crs, crs)
 
 
 class EJAAnalysis(object):
-    resultImagePath = r'results/EJA_smell_report.png'
-    resultImagePathKey = r'results/EJA_smell_report'
+    resultImagePath = r"results/EJA_smell_report.png"
+    resultImagePathKey = r"results/EJA_smell_report"
     # Geo-Coordinate Object that have latitude and longitude
     class Coordinate(object):
         def __init__(self, lat: float, long: float):
